@@ -1,0 +1,6 @@
+## Interface: 80000
+## Title: Player Frame Smart Hide
+## Author: Bill Dami
+## Version: 0.1
+
+main.lua
