@@ -4,10 +4,9 @@ local P = "player";
 local function isHealthOutsideThreshold()
     local threshold = PfshOptions["health"];
     if threshold then
-        local
         local hp = UnitHealth(P);
         local maxHP = UnitHealthMax(P);
-        local pct = ((maxHP - hp) / maxHP) * 100;
+        local pct = (hp / maxHP) * 100;
         return pct < threshold;
     else
         return false;
@@ -15,11 +14,11 @@ local function isHealthOutsideThreshold()
 end
 
 local function isPowerOutsideThreshold()
-    local threshold = PfshOptions["health"];
+    local threshold = PfshOptions["power"];
     if threshold then
         local power = UnitPower(P);
         local maxPower = UnitPowerMax(P);
-        local pct = ((maxPower - power) / maxPower) * 100;
+        local pct = (power / maxPower) * 100;
         local powerId, powerType = UnitPowerType(P);
         local doesDecay = addon.decayPowerTypes[powerType];
         return (doesDecay and pct > threshold) or (not doesDecay and pct < threshold);
@@ -29,20 +28,24 @@ local function isPowerOutsideThreshold()
 end
 
 local function showPlayerFrame()
-    PlayerFrame:SetAlpha(1);
-    if not PfshOptions["interactive"] then
-        PlayerFrame:EnableMouse(true);
+    if PfshOptions["interactive"] then
+        PlayerFrame:SetAlpha(1);
+    else
+        PlayerFrame:SetScript("OnEvent", PlayerFrame_OnEvent);
+        PlayerFrame:Show();
     end
 end
 
 local function hidePlayerFrame()
-    PlayerFrame:SetAlpha(0);
-    if not PfshOptions["interactive"] then
-        PlayerFrame:EnableMouse(false);
+    if PfshOptions["interactive"] then
+        PlayerFrame:SetAlpha(0);
+    else
+        PlayerFrame:SetScript("OnEvent", nil);
+        PlayerFrame:Hide();
     end
 end
 
-function addon.togglePlayerFrame()
+addon.togglePlayerFrame = function()
     -- show player frame if player has a target
     if UnitExists("target") then return showPlayerFrame(); end
 
