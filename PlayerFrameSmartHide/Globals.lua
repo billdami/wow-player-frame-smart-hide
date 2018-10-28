@@ -1,6 +1,6 @@
 local addonName, addon = ...;
 
-addon.pfshDefaults = {
+addon.defaults = {
     ["options"] = {
         ["interactive"] = false,
         ["health"] = 100,
@@ -11,6 +11,7 @@ addon.pfshDefaults = {
 addon.helpText = [[
     Player Frame Smart Hide commands:
     /playerframe help - Displays this list of commands
+    /playerframe settings - Displays the currently set option values
     /playerframe interactive on|off (default: off) - Toggle player frame interactivity when hidden.
     /playerframe health 0-100|off (default: 100) - The player health % below which the player frame will be hidden.
     /playerframe power 0-100|off (default: off) - The player power % below (or above for rage-like power types) which the player frame will be hidden.

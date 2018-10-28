@@ -7,4 +7,5 @@
 
 Globals.lua
 SlashCommands.lua
+Functions.lua
 Main.lua
