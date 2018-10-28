@@ -36,7 +36,9 @@ end
 
 local function hidePlayerFrame()
     local interactive = PfshOptions["interactive"] and true or false;
-    PlayerFrame:EnableMouse(interactive);
+    if not InCombatLockdown() then
+        PlayerFrame:EnableMouse(interactive);
+    end
     PlayerFrame:SetAlpha(0);
 end
 
