@@ -1,6 +1,11 @@
 ## Interface: 80000
 ## Title: Player Frame Smart Hide
 ## Author: Bill Dami
-## Version: 0.1
+## Version: 0.2
 
-main.lua
+## SavedVariablesPerCharacter: PfshOptions
+
+Globals.lua
+SlashCommands.lua
+Functions.lua
+Main.lua
