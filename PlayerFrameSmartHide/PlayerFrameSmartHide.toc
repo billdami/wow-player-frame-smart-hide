@@ -3,4 +3,8 @@
 ## Author: Bill Dami
 ## Version: 0.1
 
-main.lua
+## SavedVariablesPerCharacter: PfshOptions
+
+Globals.lua
+SlashCommands.lua
+Main.lua
