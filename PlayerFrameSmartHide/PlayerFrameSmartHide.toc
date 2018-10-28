@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Title: Player Frame Smart Hide
 ## Author: Bill Dami
-## Version: 0.2
+## Version: 0.3
 
 ## SavedVariablesPerCharacter: PfshOptions
 
