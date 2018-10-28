@@ -10,12 +10,9 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
     if command == "interactive" then
         if value == "on" then
             PfshOptions["interactive"] = true;
-            PlayerFrame:SetScript("OnEvent", PlayerFrame_OnEvent);
-            PlayerFrame:Show();
             print("Set interactive mode to ON");
         elseif value == "off" then
             PfshOptions["interactive"] = false;
-            PlayerFrame:SetAlpha(1);
             print("Set interactive mode to OFF");
         end
     -- set health threshold
@@ -45,9 +42,9 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
     -- display current setting values
     elseif command == "settings" then
         print("Player Frame Smart Hide settings:");
-        print("Interactive mode: " .. (PfshOptions["interactive"] and "ON" or "OFF"));
-        print("Health threshold: " .. (PfshOptions["health"] and tostring(PfshOptions["health"]) or "OFF"));
-        print("Power threshold: " .. (PfshOptions["power"] and tostring(PfshOptions["power"]) or "OFF"));
+        print("Interactive mode: |cff9ed4ff" .. (PfshOptions["interactive"] and "ON" or "OFF"));
+        print("Health threshold: |cff9ed4ff" .. (PfshOptions["health"] and tostring(PfshOptions["health"]) or "OFF"));
+        print("Power threshold: |cff9ed4ff" .. (PfshOptions["power"] and tostring(PfshOptions["power"]) or "OFF"));
     -- show help text
     else
         print(addon.helpText);

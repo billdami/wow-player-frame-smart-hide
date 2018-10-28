@@ -28,21 +28,16 @@ local function isPowerOutsideThreshold()
 end
 
 local function showPlayerFrame()
-    if PfshOptions["interactive"] then
-        PlayerFrame:SetAlpha(1);
-    else
-        PlayerFrame:SetScript("OnEvent", PlayerFrame_OnEvent);
-        PlayerFrame:Show();
+    PlayerFrame:SetAlpha(1);
+    if not PlayerFrame:IsMouseEnabled() then
+        PlayerFrame:EnableMouse(true);
     end
 end
 
 local function hidePlayerFrame()
-    if PfshOptions["interactive"] then
-        PlayerFrame:SetAlpha(0);
-    else
-        PlayerFrame:SetScript("OnEvent", nil);
-        PlayerFrame:Hide();
-    end
+    local interactive = PfshOptions["interactive"] and true or false;
+    PlayerFrame:EnableMouse(interactive);
+    PlayerFrame:SetAlpha(0);
 end
 
 addon.togglePlayerFrame = function()
