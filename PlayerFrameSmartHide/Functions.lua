@@ -27,6 +27,15 @@ local function isPowerOutsideThreshold()
     end
 end
 
+local function isMouseOverPlayerFrame()
+    local mouseover = PfshOptions["mouseover"] and true or false;
+    if mouseover and PlayerFrame:IsMouseOver()
+        return true;
+    else
+        return false;
+    end
+end
+
 local function showPlayerFrame()
     PlayerFrame:SetAlpha(1);
     if not PlayerFrame:IsMouseEnabled() then
@@ -42,19 +51,42 @@ local function hidePlayerFrame()
     PlayerFrame:SetAlpha(0);
 end
 
-addon.togglePlayerFrame = function()
+local function shouldShowPlayerFrame()
     -- show player frame if player has a target
-    if UnitExists("target") then return showPlayerFrame(); end
+    if UnitExists("target") then return true; end
 
     -- show player frame if player is in combat
-    if UnitAffectingCombat(P) then return showPlayerFrame(); end
+    if UnitAffectingCombat(P) then return true; end
 
     -- show player frame if player health is < 100%
-    if isHealthOutsideThreshold() then return showPlayerFrame(); end
+    if isHealthOutsideThreshold() then return true; end
 
     -- show player frame if player power is < 100% (or > 0 if its a decaying power type, e.g. rage)
-    if isPowerOutsideThreshold() then return showPlayerFrame(); end
+    if isPowerOutsideThreshold() then return true; end
+
+    -- show player frame if it is moused over
+    if isMouseOverPlayerFrame() then return true; end
 
     -- otherwise, hide the player frame
-    return hidePlayerFrame();
+    return false;
+end
+
+addon.togglePlayerFrame = function()
+    if shouldShowPlayerFrame()
+        showPlayerFrame();
+    else
+        hidePlayerFrame();
+    end
+
+    local mouseover = PfshOptions["mouseover"] and true or false;
+
+    if mouseover
+        C_Timer.NewTicker(0.10, function()
+            if shouldShowPlayerFrame() then
+                showPlayerFrame();
+            else
+                hidePlayerFrame();
+            end
+        end)
+    end
 end
