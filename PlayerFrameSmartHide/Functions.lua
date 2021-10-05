@@ -72,7 +72,7 @@ local function shouldShowPlayerFrame()
 end
 
 addon.togglePlayerFrame = function()
-    if shouldShowPlayerFrame()
+    if shouldShowPlayerFrame() then
         showPlayerFrame();
     else
         hidePlayerFrame();
