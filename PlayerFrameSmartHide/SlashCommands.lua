@@ -16,7 +16,7 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             print("Set interactive mode to |cff9ed4ffOFF");
         end
     -- set mouseover mode
-    if command == "mouseover" then
+    elseif command == "mouseover" then
         if value == "on" then
             PfshOptions["mouseover"] = true;
             print("Set mouseover mode to |cff9ed4ffON");
