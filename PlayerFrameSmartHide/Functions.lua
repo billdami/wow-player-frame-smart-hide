@@ -29,7 +29,7 @@ end
 
 local function isMouseOverPlayerFrame()
     local mouseover = PfshOptions["mouseover"] and true or false;
-    if mouseover and PlayerFrame:IsMouseOver()
+    if mouseover and PlayerFrame:IsMouseOver() then
         return true;
     else
         return false;
