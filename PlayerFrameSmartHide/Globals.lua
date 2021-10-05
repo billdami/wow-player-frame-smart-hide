@@ -16,7 +16,7 @@ Player Frame Smart Hide commands:
 |cffeab517/playerframe interactive on|off|r |cffadadad(default: off)|r - Toggle player frame interactivity when hidden.
 |cffeab517/playerframe health 0-100|off|r |cffadadad(default: 100)|r - The player health % below which the player frame will be shown.
 |cffeab517/playerframe power 0-100|off|r |cffadadad(default: off)|r - The player power % below which (or above for rage-like power types) the player frame will be shown.
-|cffeab517/playerframe mouseover on|off|r |cffadadad(default: off)|r - Show the player frame on mouseover (UI reload required for changes to take effect).]];
+|cffeab517/playerframe mouseover on|off|r |cffadadad(default: off)|r - Show the player frame on mouseover.]];
 
 -- https://wow.gamepedia.com/PowerType
 addon.decayPowerTypes = {
