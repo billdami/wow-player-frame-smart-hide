@@ -80,7 +80,7 @@ addon.togglePlayerFrame = function()
 
     local mouseover = PfshOptions["mouseover"] and true or false;
 
-    if mouseover
+    if mouseover then
         C_Timer.NewTicker(0.10, function()
             if shouldShowPlayerFrame() then
                 showPlayerFrame();
