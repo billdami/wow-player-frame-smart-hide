@@ -15,6 +15,15 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             PfshOptions["interactive"] = false;
             print("Set interactive mode to |cff9ed4ffOFF");
         end
+    -- set mouseover mode
+    elseif command == "mouseover" then
+        if value == "on" then
+            PfshOptions["mouseover"] = true;
+            print("Set mouseover mode to |cff9ed4ffON");
+        elseif value == "off" then
+            PfshOptions["mouseover"] = false;
+            print("Set mouseover mode to |cff9ed4ffOFF");
+        end
     -- set health threshold
     elseif command == "health" then
         if value == "off" then
@@ -43,6 +52,7 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
     elseif command == "settings" then
         print("Player Frame Smart Hide settings:");
         print("Interactive mode: |cff9ed4ff" .. (PfshOptions["interactive"] and "ON" or "OFF"));
+        print("Mouseover mode: |cff9ed4ff" .. (PfshOptions["mouseover"] and "ON" or "OFF"));
         print("Health threshold: |cff9ed4ff" .. (PfshOptions["health"] and tostring(PfshOptions["health"]) .. "%" or "OFF"));
         print("Power threshold: |cff9ed4ff" .. (PfshOptions["power"] and tostring(PfshOptions["power"]) .. "%" or "OFF"));
     -- show help text
