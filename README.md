@@ -6,7 +6,7 @@ Project Homepage: https://www.curseforge.com/wow/addons/player-frame-smart-hide
 
 ## Compatibility
 
-Targets World of Warcraft Retail 12.1.5 (interface `120105`). Classic/Forever clients are currently not supported (coming soon!™️).
+Targets the latest versions of World of Warcraft Retail, Classic, and Forever.
 
 The player frame is shown while you have a target, are in combat, or mouseover it. Otherwise it is made invisible.
 
@@ -23,13 +23,13 @@ Use `/playerframe help` for all commands and `/playerframe settings` to inspect 
 Run the mocked API regression tests from the repository root with Lua:
 
 ```sh
-lua tests/compatibility.lua
+lua Versions/Retail/tests/compatibility.lua
 ```
 
 Alternatively, with Node.js installed:
 
 ```sh
-npx --yes --package fengari-node-cli fengari tests/compatibility.lua
+npx --yes --package fengari-node-cli fengari Versions/Retail/tests/compatibility.lua
 ```
 
 The tests cover initialization, saved settings, health and power thresholds, secret values, combat lockdown, mouseover timer cleanup, resource update events, and slash commands. They do not emulate WoW's secure execution environment.
