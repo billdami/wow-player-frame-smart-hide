@@ -2,7 +2,8 @@
 ## Title: Player Frame Smart Hide
 ## Author: Bill Dami
 ## Version: 0.6
-## IconTexture 132089
+## IconTexture: 132089
+## Notes: Hides the default player frame when not needed (out of combat, no target, etc)
 ## Dependencies: Blizzard_UnitFrame
 ## X-Curse-Project-ID: 305783
 
