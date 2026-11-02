@@ -3,8 +3,6 @@ local addonName, addon = ...;
 addon.defaults = {
     ["options"] = {
         ["interactive"] = false,
-        ["health"] = 100,
-        ["power"] = false,
         ["mouseover"] = false
     }
 };
