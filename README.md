@@ -2,15 +2,15 @@
 
 WoW addon that smartly hides the player frame
 
-Project Homepage: https://wow.curseforge.com/projects/player-frame-smart-hide
+Project Homepage: https://www.curseforge.com/wow/addons/player-frame-smart-hide
 
 ## Compatibility
 
-Targets World of Warcraft Retail 12.1.5 (interface `120105`). Classic clients are not supported.
+Targets World of Warcraft Retail 12.1.5 (interface `120105`). Classic/Forever clients are currently not supported (coming soon!™️).
 
-The player frame is shown while you have a target, are in combat, or meet a configured health, power, or mouseover condition. Otherwise it is made transparent.
+The player frame is shown while you have a target, are in combat, or mouseover it. Otherwise it is made invisible.
 
-WoW 12.x can restrict health and power values as secret values. When an enabled threshold cannot be evaluated safely, the addon keeps the frame visible rather than inspecting restricted data. Normal threshold behavior resumes when the values are accessible again. A zero maximum health also keeps the frame visible; a resource with zero maximum power is ignored.
+WoW 12.x+ (Midnight) restricts health and power values as secret values. As such, this addon can no longer compare the player's current health/power against a set threshold in order to conditionally hide the (secure) default player frame. If you require this functionality, you will need to use other addons that completely replace the default frame.
 
 Protected mouse-setting changes are deferred during combat. If the frame was noninteractive before combat, it may remain noninteractive until combat ends, even though it is visible. Use `/playerframe interactive on` outside combat to keep it interactive while hidden as well.
 

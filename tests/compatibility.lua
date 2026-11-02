@@ -2,21 +2,10 @@ local addon = {};
 local state;
 local mainFrame;
 local tickers = {};
-local secret = setmetatable({}, {
-    __div = function() error("arithmetic on a secret value"); end,
-    __le = function() error("comparison with a secret value"); end,
-    __lt = function() error("comparison with a secret value"); end
-});
 
-function issecretvalue(value) return rawequal(value, secret); end
 function InCombatLockdown() return state.lockdown; end
 function UnitAffectingCombat() return state.combat; end
 function UnitExists() return state.target; end
-function UnitHealth() return state.health; end
-function UnitHealthMax() return state.maxHealth; end
-function UnitPower() return state.power; end
-function UnitPowerMax() return state.maxPower; end
-function UnitPowerType() return 0, state.powerType; end
 function strsplit(delimiter, text)
     return text:match("^([^" .. delimiter .. "]*)" .. delimiter .. "?(.*)$");
 end
@@ -35,10 +24,6 @@ C_Timer = {
 function CreateFrame()
     mainFrame = { events = {} };
     function mainFrame:RegisterEvent(event) self.events[event] = true; end
-    function mainFrame:RegisterUnitEvent(event, unit)
-        assert(unit == "player");
-        self.events[event] = true;
-    end
     function mainFrame:UnregisterEvent(event) self.events[event] = nil; end
     function mainFrame:SetScript(script, callback)
         assert(script == "OnEvent");
@@ -63,11 +48,10 @@ end
 local function reset()
     if addon.stopMouseoverTicker then addon.stopMouseoverTicker(); end
     state = {
-        health = 100, maxHealth = 100, power = 100, maxPower = 100,
-        powerType = "MANA", target = false, combat = false,
+        target = false, combat = false,
         lockdown = false, mouseover = false
     };
-    PfshOptions = { health = 100, power = false, interactive = false, mouseover = false };
+    PfshOptions = { interactive = false, mouseover = false };
     PlayerFrame.mouseEnabled = true;
     PlayerFrame.alpha = nil;
 end
@@ -89,23 +73,19 @@ assert(PfshOptions == nil);
 addon.togglePlayerFrame();
 assert(PlayerFrame.alpha == nil);
 mainFrame.onEvent(mainFrame, "ADDON_LOADED", "PlayerFrameSmartHide");
-assert(PfshOptions.health == 100 and PfshOptions.power == false);
+assert(PfshOptions.interactive == false and PfshOptions.mouseover == false);
 assert(PfshOptions ~= addon.defaults.options);
 assert(not mainFrame.events.ADDON_LOADED);
 assert(PlayerFrame.alpha == nil);
 mainFrame.onEvent(mainFrame, "PLAYER_ENTERING_WORLD");
 assert(PlayerFrame.alpha == 0);
 
-PfshOptions = { health = false, power = 25, interactive = true };
+PfshOptions = { interactive = true };
 mainFrame.onEvent(mainFrame, "ADDON_LOADED", "PlayerFrameSmartHide");
-assert(PfshOptions.health == false and PfshOptions.power == 25);
 assert(PfshOptions.interactive == true and PfshOptions.mouseover == false);
 
 reset();
 expectAlpha(0);
-state.health = 99;
-expectAlpha(1);
-state.health = 100;
 state.target = true;
 expectAlpha(1);
 state.target = false;
@@ -117,38 +97,6 @@ state.lockdown = true;
 expectAlpha(1);
 state.lockdown = false;
 expectAlpha(0);
-
-for _, field in ipairs({ "health", "maxHealth", "power", "maxPower" }) do
-    reset();
-    if field == "health" or field == "maxHealth" then
-        PfshOptions.health = 100;
-        PfshOptions.power = false;
-    else
-        PfshOptions.health = false;
-        PfshOptions.power = 100;
-    end
-    state[field] = secret;
-    expectAlpha(1);
-end
-
-reset();
-state.maxHealth = 0;
-expectAlpha(1);
-reset();
-PfshOptions.health = false;
-PfshOptions.power = 100;
-state.maxPower = 0;
-expectAlpha(0);
-state.maxPower = 100;
-expectAlpha(0);
-state.power = 99;
-expectAlpha(1);
-PfshOptions.power = 0;
-state.powerType = "RAGE";
-state.power = 0;
-expectAlpha(0);
-state.power = 1;
-expectAlpha(1);
 
 reset();
 PfshOptions.mouseover = true;
@@ -173,10 +121,6 @@ mainFrame.onEvent(mainFrame, "PLAYER_ENTERING_WORLD");
 assert(not tickers[#tickers].cancelled);
 
 reset();
-SlashCmdList.PLAYERFRAMEHIDE("health off");
-assert(PfshOptions.health == false);
-SlashCmdList.PLAYERFRAMEHIDE("power 50");
-assert(PfshOptions.power == 50);
 SlashCmdList.PLAYERFRAMEHIDE("mouseover on");
 assert(PfshOptions.mouseover and not tickers[#tickers].cancelled);
 SlashCmdList.PLAYERFRAMEHIDE("mouseover off");
@@ -186,12 +130,8 @@ assert(PlayerFrame.mouseEnabled);
 SlashCmdList.PLAYERFRAMEHIDE("interactive off");
 assert(not PlayerFrame.mouseEnabled);
 
-for _, event in ipairs({ "UNIT_MAXHEALTH", "UNIT_MAXPOWER", "UNIT_DISPLAYPOWER" }) do
-    assert(mainFrame.events[event], "missing resource update event");
-end
-
 for _, filename in ipairs({ "Globals.lua", "SlashCommands.lua", "Functions.lua", "Main.lua" }) do
     assert(loadfile("PlayerFrameSmartHide/" .. filename));
 end
 
-print("PASS: initialization, thresholds, secret values, combat lockdown, mouseover lifecycle, slash commands, and Lua syntax");
+print("PASS: initialization, targeting, combat lockdown, mouseover lifecycle, slash commands, and Lua syntax");

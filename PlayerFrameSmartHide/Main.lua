@@ -9,11 +9,6 @@ mainFrame:RegisterEvent("PLAYER_LEAVE_COMBAT");
 mainFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 mainFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
 mainFrame:RegisterEvent("PLAYER_TARGET_CHANGED");
-mainFrame:RegisterUnitEvent("UNIT_HEALTH", "player");
-mainFrame:RegisterUnitEvent("UNIT_MAXHEALTH", "player");
-mainFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
-mainFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player");
-mainFrame:RegisterUnitEvent("UNIT_DISPLAYPOWER", "player");
 
 -- addon entry point
 mainFrame:SetScript("OnEvent", function(self, event, arg1)

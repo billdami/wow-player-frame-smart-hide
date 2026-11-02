@@ -2,7 +2,9 @@
 ## Title: Player Frame Smart Hide
 ## Author: Bill Dami
 ## Version: 0.6
+## IconTexture 132089
 ## Dependencies: Blizzard_UnitFrame
+## X-Curse-Project-ID: 305783
 
 ## SavedVariablesPerCharacter: PfshOptions
 
