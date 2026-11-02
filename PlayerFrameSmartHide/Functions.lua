@@ -1,31 +1,6 @@
 local addonName, addon = ...;
 local P = "player";
-
-local function isHealthOutsideThreshold()
-    local threshold = PfshOptions["health"];
-    if threshold then
-        local hp = UnitHealth(P);
-        local maxHP = UnitHealthMax(P);
-        local pct = (hp / maxHP) * 100;
-        return pct < threshold;
-    else
-        return false;
-    end
-end
-
-local function isPowerOutsideThreshold()
-    local threshold = PfshOptions["power"];
-    if threshold then
-        local power = UnitPower(P);
-        local maxPower = UnitPowerMax(P);
-        local pct = (power / maxPower) * 100;
-        local powerId, powerType = UnitPowerType(P);
-        local doesDecay = addon.decayPowerTypes[powerType];
-        return (doesDecay and pct > threshold) or (not doesDecay and pct < threshold);
-    else
-        return false;
-    end
-end
+local mouseoverTicker;
 
 local function isMouseOverPlayerFrame()
     local mouseover = PfshOptions["mouseover"] and true or false;
@@ -38,7 +13,7 @@ end
 
 local function showPlayerFrame()
     PlayerFrame:SetAlpha(1);
-    if not PlayerFrame:IsMouseEnabled() then
+    if not InCombatLockdown() and not PlayerFrame:IsMouseEnabled() then
         PlayerFrame:EnableMouse(true);
     end
 end
@@ -56,13 +31,7 @@ local function shouldShowPlayerFrame()
     if UnitExists("target") then return true; end
 
     -- show player frame if player is in combat
-    if UnitAffectingCombat(P) then return true; end
-
-    -- show player frame if player health is < 100%
-    if isHealthOutsideThreshold() then return true; end
-
-    -- show player frame if player power is < 100% (or > 0 if its a decaying power type, e.g. rage)
-    if isPowerOutsideThreshold() then return true; end
+    if InCombatLockdown() or UnitAffectingCombat(P) then return true; end
 
     -- show player frame if it is moused over
     if isMouseOverPlayerFrame() then return true; end
@@ -71,22 +40,33 @@ local function shouldShowPlayerFrame()
     return false;
 end
 
-addon.togglePlayerFrame = function()
+local function updatePlayerFrame()
+    if not PfshOptions or not PlayerFrame then return; end
+
     if shouldShowPlayerFrame() then
         showPlayerFrame();
     else
         hidePlayerFrame();
     end
+end
 
-    local mouseover = PfshOptions["mouseover"] and true or false;
+addon.stopMouseoverTicker = function()
+    if mouseoverTicker then
+        mouseoverTicker:Cancel();
+        mouseoverTicker = nil;
+    end
+end
 
-    if mouseover then
-        C_Timer.NewTicker(0.10, function()
-            if shouldShowPlayerFrame() then
-                showPlayerFrame();
-            else
-                hidePlayerFrame();
-            end
-        end)
+addon.togglePlayerFrame = function()
+    if not PfshOptions or not PlayerFrame then return; end
+
+    updatePlayerFrame();
+
+    if PfshOptions["mouseover"] then
+        if not mouseoverTicker then
+            mouseoverTicker = C_Timer.NewTicker(0.10, updatePlayerFrame);
+        end
+    else
+        addon.stopMouseoverTicker();
     end
 end
