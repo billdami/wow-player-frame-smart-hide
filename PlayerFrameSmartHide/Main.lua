@@ -10,6 +10,11 @@ mainFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 mainFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
 mainFrame:RegisterEvent("PLAYER_TARGET_CHANGED");
 
+if addon.isClassic() then
+    mainFrame:RegisterUnitEvent("UNIT_HEALTH", "player");
+    mainFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player");
+end
+
 -- addon entry point
 mainFrame:SetScript("OnEvent", function(self, event, arg1)
     -- when the addon is loaded check if its SavedVariables exist

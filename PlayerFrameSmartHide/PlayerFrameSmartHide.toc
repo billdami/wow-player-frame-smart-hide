@@ -1,7 +1,7 @@
-## Interface: 120105
+## Interface: 120105, 11509, 20506, 30405, 40402, 50504, 16001
 ## Title: Player Frame Smart Hide
 ## Author: Bill Dami
-## Version: 0.6
+## Version: 0.7
 ## IconTexture: 132089
 ## Notes: Hides the default player frame when not needed (out of combat, no target, etc)
 ## Dependencies: Blizzard_UnitFrame
@@ -10,6 +10,7 @@
 ## SavedVariablesPerCharacter: PfshOptions
 
 Globals.lua
+GlobalsClassic.lua [AllowLoadGameType vanilla, tbc, wrath, cata, mists][ExcludeLoadGameType standard, forever, camelot]
 SlashCommands.lua
 Functions.lua
 Main.lua
