@@ -10,7 +10,7 @@ Targets the latest versions of World of Warcraft Retail, Classic, and Forever.
 
 The player frame is shown while you have a target, are in combat, or mouseover it. Otherwise it is made invisible.
 
-WoW 12.x+ (Midnight) restricts health and power values as secret values. As such, this addon can no longer compare the player's current health/power against a set threshold in order to conditionally hide the (secure) default player frame. If you require this functionality, you will need to use other addons that completely replace the default frame.
+WoW 12.x+ (Midnight) and Wow Forever restricts health and power values as secret values. As such, this addon can no longer compare the player's current health/power against a set threshold in order to conditionally hide the (secure) default player frame. If you require this functionality, you will need to use other addons that completely replace the default frame.
 
 Protected mouse-setting changes are deferred during combat. If the frame was noninteractive before combat, it may remain noninteractive until combat ends, even though it is visible. Use `/playerframe interactive on` outside combat to keep it interactive while hidden as well.
 
@@ -23,13 +23,15 @@ Use `/playerframe help` for all commands and `/playerframe settings` to inspect 
 Run the mocked API regression tests from the repository root with Lua:
 
 ```sh
-lua Versions/Retail/tests/compatibility.lua
+lua tests/standard.lua
+lua tests/classic.lua
 ```
 
 Alternatively, with Node.js installed:
 
 ```sh
-npx --yes --package fengari-node-cli fengari Versions/Retail/tests/compatibility.lua
+npx --yes --package fengari-node-cli fengari tests/standard.lua
+npx --yes --package fengari-node-cli fengari tests/classic.lua
 ```
 
 The tests cover initialization, saved settings, health and power thresholds, secret values, combat lockdown, mouseover timer cleanup, resource update events, and slash commands. They do not emulate WoW's secure execution environment.

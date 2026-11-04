@@ -3,11 +3,11 @@ local P = "player";
 local mouseoverTicker;
 
 local classicVersions = { 
-    WOW_PROJECT_CLASSIC = true,
-    WOW_PROJECT_BURNING_CRUSADE_CLASSIC = true,
-    WOW_PROJECT_WRATH_CLASSIC = true,
-    WOW_PROJECT_CATACLYSM_CLASSIC = true,
-    WOW_PROJECT_MISTS_CLASSIC = true
+    [WOW_PROJECT_CLASSIC] = true,
+    [WOW_PROJECT_BURNING_CRUSADE_CLASSIC] = true,
+    [WOW_PROJECT_WRATH_CLASSIC] = true,
+    [WOW_PROJECT_CATACLYSM_CLASSIC] = true,
+    [WOW_PROJECT_MISTS_CLASSIC] = true
 }
 
 local function isHealthOutsideThreshold()

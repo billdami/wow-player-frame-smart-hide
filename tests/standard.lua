@@ -24,6 +24,7 @@ C_Timer = {
 function CreateFrame()
     mainFrame = { events = {} };
     function mainFrame:RegisterEvent(event) self.events[event] = true; end
+    function mainFrame:RegisterUnitEvent(event, unit) self.events[event] = true; end
     function mainFrame:UnregisterEvent(event) self.events[event] = nil; end
     function mainFrame:SetScript(script, callback)
         assert(script == "OnEvent");
