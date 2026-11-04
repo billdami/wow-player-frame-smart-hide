@@ -2,14 +2,6 @@ local addonName, addon = ...;
 local P = "player";
 local mouseoverTicker;
 
-local classicVersions = { 
-    [WOW_PROJECT_CLASSIC] = true,
-    [WOW_PROJECT_BURNING_CRUSADE_CLASSIC] = true,
-    [WOW_PROJECT_WRATH_CLASSIC] = true,
-    [WOW_PROJECT_CATACLYSM_CLASSIC] = true,
-    [WOW_PROJECT_MISTS_CLASSIC] = true
-}
-
 local function isHealthOutsideThreshold()
     local threshold = PfshOptions["health"];
     if threshold then
@@ -115,5 +107,10 @@ addon.togglePlayerFrame = function()
 end
 
 addon.isClassic = function() 
-    return classicVersions[WOW_PROJECT_ID] and true or false;
+    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return true; end
+	if WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then return true; end
+	if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then return true; end
+	if WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then return true; end
+	if WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then return true; end
+	return false;
 end
