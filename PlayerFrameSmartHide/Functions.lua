@@ -2,6 +2,32 @@ local addonName, addon = ...;
 local P = "player";
 local mouseoverTicker;
 
+local function isHealthOutsideThreshold()
+    local threshold = PfshOptions["health"];
+    if threshold then
+        local hp = UnitHealth(P);
+        local maxHP = UnitHealthMax(P);
+        local pct = (hp / maxHP) * 100;
+        return pct < threshold;
+    else
+        return false;
+    end
+end
+
+local function isPowerOutsideThreshold()
+    local threshold = PfshOptions["power"];
+    if threshold then
+        local power = UnitPower(P);
+        local maxPower = UnitPowerMax(P);
+        local pct = (power / maxPower) * 100;
+        local powerId, powerType = UnitPowerType(P);
+        local doesDecay = addon.decayPowerTypes[powerType];
+        return (doesDecay and pct > threshold) or (not doesDecay and pct < threshold);
+    else
+        return false;
+    end
+end
+
 local function isMouseOverPlayerFrame()
     local mouseover = PfshOptions["mouseover"] and true or false;
     if mouseover and PlayerFrame:IsMouseOver() then
@@ -36,6 +62,15 @@ local function shouldShowPlayerFrame()
     -- show player frame if it is moused over
     if isMouseOverPlayerFrame() then return true; end
 
+    -- classic editions only 
+    if addon.isClassic() then
+        -- show player frame if player health is < 100%
+        if isHealthOutsideThreshold() then return true; end
+
+        -- show player frame if player power is < 100% (or > 0 if its a decaying power type, e.g. rage)
+        if isPowerOutsideThreshold() then return true; end
+    end
+
     -- otherwise, hide the player frame
     return false;
 end
@@ -69,4 +104,13 @@ addon.togglePlayerFrame = function()
     else
         addon.stopMouseoverTicker();
     end
+end
+
+addon.isClassic = function() 
+    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return true; end
+	if WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then return true; end
+	if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then return true; end
+	if WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then return true; end
+	if WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then return true; end
+	return false;
 end
