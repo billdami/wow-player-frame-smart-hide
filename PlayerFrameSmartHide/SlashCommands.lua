@@ -7,7 +7,7 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
     value = value and string.gsub(string.lower(value), "%s+", "") or nil;
 
     -- set interactive mode
-    if command == "interactive" then
+    if command:lower() == "interactive" then
         if value == "on" then
             PfshOptions["interactive"] = true;
             print("Set interactive mode to |cff9ed4ffON");
@@ -16,7 +16,7 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             print("Set interactive mode to |cff9ed4ffOFF");
         end
     -- set mouseover mode
-    elseif command == "mouseover" then
+    elseif command:lower() == "mouseover" then
         if value == "on" then
             PfshOptions["mouseover"] = true;
             print("Set mouseover mode to |cff9ed4ffON");
@@ -24,8 +24,15 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             PfshOptions["mouseover"] = false;
             print("Set mouseover mode to |cff9ed4ffOFF");
         end
-     -- set health threshold
-    elseif addon.isClassic() and command == "health" then
+    -- set combat delay
+    elseif command:lower() == "combatdelay" then
+        value = tonumber(value);
+        if value and value >= 0 then
+            PfshOptions["combatDelay"] = value;
+            print("Set combat delay to |cff9ed4ff" .. tostring(value) .. " seconds");
+        end
+    -- set health threshold
+    elseif addon.isClassic() and command:lower() == "health" then
         if value == "off" then
             PfshOptions["health"] = false;
             print("Show on player health threshold set to |cff9ed4ffOFF");
@@ -37,7 +44,7 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             end
         end
     -- set power threshold
-    elseif addon.isClassic() and command == "power" then
+    elseif addon.isClassic() and command:lower() == "power" then
         if value == "off" then
             PfshOptions["power"] = false;
             print("Show on player power threshold set to |cff9ed4ffOFF");
@@ -49,7 +56,7 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             end
         end
     -- display current setting values
-    elseif command == "settings" then
+    elseif command:lower() == "settings" then
         print("Player Frame Smart Hide settings:");
         print("Interactive mode: |cff9ed4ff" .. (PfshOptions["interactive"] and "ON" or "OFF"));
         print("Mouseover mode: |cff9ed4ff" .. (PfshOptions["mouseover"] and "ON" or "OFF"));
