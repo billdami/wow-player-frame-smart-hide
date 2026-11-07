@@ -38,5 +38,14 @@ mainFrame:SetScript("OnEvent", function(self, event, arg1)
         return;
     end
 
+    -- ignore events for settings that are disabled
+    if event == "UNIT_POWER_UPDATE" and not PfshOptions["power"] then
+        return;
+    end
+
+    if event == "UNIT_HEALTH" and not PfshOptions["health"] then
+        return;
+    end
+
     addon.togglePlayerFrame(event);
 end);

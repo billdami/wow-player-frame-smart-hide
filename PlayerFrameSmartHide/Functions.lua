@@ -1,7 +1,14 @@
 local addonName, addon = ...;
 local P = "player";
 local mouseoverTicker;
-local oocTicker;
+local hideTicker;
+
+local animateEvents = {
+    ["PLAYER_REGEN_ENABLED"] = true,
+    ["PLAYER_LEAVE_COMBAT"] = true,
+    ["UNIT_HEALTH"] = true,
+    ["UNIT_POWER_UPDATE"] = true
+}
 
 local function isHealthOutsideThreshold()
     local threshold = PfshOptions["health"];
@@ -81,13 +88,20 @@ local function shouldShowPlayerFrame()
     return false;
 end
 
-local function updatePlayerFrame(animateOut)
+local function updatePlayerFrame(event)
     if not PfshOptions or not PlayerFrame then return; end
+
+    addon.stopHideTicker();
 
     if shouldShowPlayerFrame() then
         showPlayerFrame();
     else
-        hidePlayerFrame(animateOut);
+        if animateEvents[event] and PfshOptions["hideDelay"] and PfshOptions["hideDelay"] > 0 then
+            hideTicker = C_Timer.NewTicker(PfshOptions["hideDelay"], function() hidePlayerFrame(true); end, 1);
+            return;
+        else
+            hidePlayerFrame(false);
+        end
     end
 end
 
@@ -98,27 +112,21 @@ addon.stopMouseoverTicker = function()
     end
 end
 
-addon.stopOocTicker = function()
-    if oocTicker then
-        oocTicker:Cancel();
-        oocTicker = nil;
+addon.stopHideTicker = function()
+    if hideTicker then
+        hideTicker:Cancel();
+        hideTicker = nil;
     end
 end
 
 addon.togglePlayerFrame = function(event)
     if not PfshOptions or not PlayerFrame then return; end
-    
-    addon.stopOocTicker();
-    if (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_LEAVE_COMBAT") and PfshOptions["combatDelay"] and PfshOptions["combatDelay"] > 0 then
-        oocTicker = C_Timer.NewTicker(PfshOptions["combatDelay"], function() updatePlayerFrame(true); end, 1);
-        return;
-    end
 
-    updatePlayerFrame();
+    updatePlayerFrame(event);
 
     if PfshOptions["mouseover"] then
         if not mouseoverTicker then
-            mouseoverTicker = C_Timer.NewTicker(0.10, updatePlayerFrame);
+            mouseoverTicker = C_Timer.NewTicker(0.10, function() updatePlayerFrame("MOUSEOVER"); end);
         end
     else
         addon.stopMouseoverTicker();

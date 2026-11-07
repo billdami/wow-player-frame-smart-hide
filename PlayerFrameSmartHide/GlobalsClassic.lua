@@ -6,7 +6,7 @@ addon.defaults = {
         ["mouseover"] = false,
         ["health"] = 100,
         ["power"] = false,
-        ["combatDelay"] = 3
+        ["hideDelay"] = 2
     }
 };
 
@@ -18,7 +18,7 @@ Player Frame Smart Hide commands:
 |cffeab517/playerframe mouseover on|off|r |cffadadad(default: off)|r - Show the player frame on mouseover.
 |cffeab517/playerframe health 0-100|off|r |cffadadad(default: 100)|r - The player health % below which the player frame will be shown.
 |cffeab517/playerframe power 0-100|off|r |cffadadad(default: off)|r - The player power % below which (or above for rage-like power types) the player frame will be shown.
-|cffeab517/playerframe combatDelay NUM|r |cffadadad(default: 3)|r - The delay in seconds before hiding the player frame after leaving combat (set to 0 to disable).]];
+|cffeab517/playerframe hideDelay NUM|r |cffadadad(default: 2)|r - The delay in seconds before hiding the player frame (except for targeting) (set to 0 to disable).]];
 
 -- https://wow.gamepedia.com/PowerType
 addon.decayPowerTypes = {

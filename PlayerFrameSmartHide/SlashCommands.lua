@@ -24,12 +24,12 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             PfshOptions["mouseover"] = false;
             print("Set mouseover mode to |cff9ed4ffOFF");
         end
-    -- set combat delay
-    elseif command:lower() == "combatdelay" then
+    -- set hide delay
+    elseif command:lower() == "hidedelay" then
         value = tonumber(value);
         if value and value >= 0 then
-            PfshOptions["combatDelay"] = value;
-            print("Set combat delay to |cff9ed4ff" .. tostring(value) .. " seconds");
+            PfshOptions["hideDelay"] = value;
+            print("Set hide delay to |cff9ed4ff" .. tostring(value) .. " seconds");
         end
     -- set health threshold
     elseif addon.isClassic() and command:lower() == "health" then
