@@ -1,6 +1,7 @@
 local addonName, addon = ...;
 local P = "player";
 local mouseoverTicker;
+local oocTicker;
 
 local function isHealthOutsideThreshold()
     local threshold = PfshOptions["health"];
@@ -44,12 +45,17 @@ local function showPlayerFrame()
     end
 end
 
-local function hidePlayerFrame()
+local function hidePlayerFrame(animateOut)
     local interactive = PfshOptions["interactive"] and true or false;
     if not InCombatLockdown() then
         PlayerFrame:EnableMouse(interactive);
     end
-    PlayerFrame:SetAlpha(0);
+
+    if animateOut then
+        UIFrameFadeOut(PlayerFrame, 0.3, PlayerFrame:GetAlpha(), 0);
+    else
+        PlayerFrame:SetAlpha(0);
+    end
 end
 
 local function shouldShowPlayerFrame()
@@ -75,13 +81,13 @@ local function shouldShowPlayerFrame()
     return false;
 end
 
-local function updatePlayerFrame()
+local function updatePlayerFrame(animateOut)
     if not PfshOptions or not PlayerFrame then return; end
 
     if shouldShowPlayerFrame() then
         showPlayerFrame();
     else
-        hidePlayerFrame();
+        hidePlayerFrame(animateOut);
     end
 end
 
@@ -92,8 +98,21 @@ addon.stopMouseoverTicker = function()
     end
 end
 
-addon.togglePlayerFrame = function()
+addon.stopOocTicker = function()
+    if oocTicker then
+        oocTicker:Cancel();
+        oocTicker = nil;
+    end
+end
+
+addon.togglePlayerFrame = function(event)
     if not PfshOptions or not PlayerFrame then return; end
+    
+    addon.stopOocTicker();
+    if (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_LEAVE_COMBAT") and PfshOptions["combatDelay"] and PfshOptions["combatDelay"] > 0 then
+        oocTicker = C_Timer.NewTicker(PfshOptions["combatDelay"], function() updatePlayerFrame(true); end, 1);
+        return;
+    end
 
     updatePlayerFrame();
 
