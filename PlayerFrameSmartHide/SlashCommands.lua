@@ -15,6 +15,15 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             PfshOptions["interactive"] = false;
             print("Set interactive mode to |cff9ed4ffOFF");
         end
+    -- set target mode
+    elseif command:lower() == "target" then
+        if value == "on" then
+            PfshOptions["target"] = true;
+            print("Set target mode to |cff9ed4ffON");
+        elseif value == "off" then
+            PfshOptions["target"] = false;
+            print("Set target mode to |cff9ed4ffOFF");
+        end
     -- set mouseover mode
     elseif command:lower() == "mouseover" then
         if value == "on" then
@@ -24,12 +33,37 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             PfshOptions["mouseover"] = false;
             print("Set mouseover mode to |cff9ed4ffOFF");
         end
+    -- set instance mode
+    elseif command:lower() == "instance" then
+        if value == "on" then
+            PfshOptions["instance"] = true;
+            print("Set instance mode to |cff9ed4ffON");
+        elseif value == "off" then
+            PfshOptions["instance"] = false;
+            print("Set instance mode to |cff9ed4ffOFF");
+        end
     -- set hide delay
     elseif command:lower() == "hidedelay" then
         value = tonumber(value);
         if value and value >= 0 then
             PfshOptions["hideDelay"] = value;
             print("Set hide delay to |cff9ed4ff" .. tostring(value) .. " seconds");
+        end
+    -- set animate mode
+    elseif command:lower() == "animate" then
+        if value == "on" then
+            PfshOptions["animate"] = true;
+            print("Set animate mode to |cff9ed4ffON");
+        elseif value == "off" then
+            PfshOptions["animate"] = false;
+            print("Set animate mode to |cff9ed4ffOFF");
+        end
+    -- set opacity level
+    elseif command:lower() == "opacity" then
+        value = tonumber(value);
+        if value and value >= 0 and value < 100 then
+            PfshOptions["opacity"] = value / 100;
+            print("Set opacity level to |cff9ed4ff" .. tostring(value) .. "%");
         end
     -- set health threshold
     elseif addon.isClassic() and command:lower() == "health" then
@@ -59,11 +93,15 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
     elseif command:lower() == "settings" then
         print("Player Frame Smart Hide settings:");
         print("Interactive mode: |cff9ed4ff" .. (PfshOptions["interactive"] and "ON" or "OFF"));
+        print("Target mode: |cff9ed4ff" .. (PfshOptions["target"] and "ON" or "OFF"));
         print("Mouseover mode: |cff9ed4ff" .. (PfshOptions["mouseover"] and "ON" or "OFF"));
+        print("Instance mode: |cff9ed4ff" .. (PfshOptions["instance"] and "ON" or "OFF"));
         if addon.isClassic() then
             print("Health threshold: |cff9ed4ff" .. (PfshOptions["health"] and tostring(PfshOptions["health"]) .. "%" or "OFF"));
             print("Power threshold: |cff9ed4ff" .. (PfshOptions["power"] and tostring(PfshOptions["power"]) .. "%" or "OFF"));
         end;
+        print("Animate mode: |cff9ed4ff" .. (PfshOptions["animate"] and "ON" or "OFF"));
+        print("Hidden opacity level: |cff9ed4ff" .. tostring(PfshOptions["opacity"] * 100) .. "%");
     -- show help text
     else
         print(addon.helpText);

@@ -10,6 +10,16 @@ local animateEvents = {
     ["UNIT_POWER_UPDATE"] = true
 }
 
+local function isInstanced()
+    local inInstance, instanceType = IsInInstance()
+    
+    if inInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "pvp" or instanceType == "arena") then
+        return true;
+    else
+        return false;
+    end
+end
+
 local function isHealthOutsideThreshold()
     local threshold = PfshOptions["health"];
     if threshold then
@@ -54,20 +64,25 @@ end
 
 local function hidePlayerFrame(animateOut)
     local interactive = PfshOptions["interactive"] and true or false;
+    local opacity = PfshOptions["opacity"] or 0;
+
     if not InCombatLockdown() then
         PlayerFrame:EnableMouse(interactive);
     end
 
     if animateOut then
-        UIFrameFadeOut(PlayerFrame, 0.3, PlayerFrame:GetAlpha(), 0);
+        UIFrameFadeOut(PlayerFrame, 0.3, PlayerFrame:GetAlpha(), opacity);
     else
-        PlayerFrame:SetAlpha(0);
+        PlayerFrame:SetAlpha(opacity);
     end
 end
 
 local function shouldShowPlayerFrame()
+    -- show the player frame if player is in an instance
+    if PfshOptions["instance"] and isInstanced() then return true; end
+
     -- show player frame if player has a target
-    if UnitExists("target") then return true; end
+    if PfshOptions["target"] and UnitExists("target") then return true; end
 
     -- show player frame if player is in combat
     if InCombatLockdown() or UnitAffectingCombat(P) then return true; end
