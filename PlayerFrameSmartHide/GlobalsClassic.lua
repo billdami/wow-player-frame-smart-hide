@@ -8,7 +8,7 @@ addon.defaults = {
         ["instance"] = false,
         ["health"] = 100,
         ["power"] = false,
-        ["hideDelay"] = 2,
+        ["hideDelay"] = 1,
         ["animate"] = true,
         ["opacity"] = 0
     }

@@ -106,12 +106,15 @@ end
 local function updatePlayerFrame(event)
     if not PfshOptions or not PlayerFrame then return; end
 
+    -- TODO if there was an in progress hide ticker, restart it if hiding on this new update
+    local hasInProgressTicker = hideTicker and true or false;
     addon.stopHideTicker();
 
     if shouldShowPlayerFrame() then
         showPlayerFrame();
     else
-        if animateEvents[event] and PfshOptions["hideDelay"] and PfshOptions["hideDelay"] > 0 then
+        local hasDelay = PfshOptions["hideDelay"] and PfshOptions["hideDelay"] > 0;
+        if (hasInProgressTicker or animateEvents[event]) and hasDelay then
             hideTicker = C_Timer.NewTicker(PfshOptions["hideDelay"], function() hidePlayerFrame(true); end, 1);
             return;
         else

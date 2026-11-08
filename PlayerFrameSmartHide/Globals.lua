@@ -6,7 +6,7 @@ addon.defaults = {
         ["target"] = true,
         ["mouseover"] = false,
         ["instance"] = false,
-        ["hideDelay"] = 2,
+        ["hideDelay"] = 1,
         ["animate"] = true,
         ["opacity"] = 0
     }
