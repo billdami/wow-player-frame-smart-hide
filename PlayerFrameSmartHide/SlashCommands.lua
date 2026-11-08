@@ -42,13 +42,6 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             PfshOptions["instance"] = false;
             print("Set instance mode to |cff9ed4ffOFF");
         end
-    -- set hide delay
-    elseif command:lower() == "hidedelay" then
-        value = tonumber(value);
-        if value and value >= 0 then
-            PfshOptions["hideDelay"] = value;
-            print("Set hide delay to |cff9ed4ff" .. tostring(value) .. " seconds");
-        end
     -- set animate mode
     elseif command:lower() == "animate" then
         if value == "on" then
@@ -100,7 +93,7 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             print("Health threshold: |cff9ed4ff" .. (PfshOptions["health"] and tostring(PfshOptions["health"]) .. "%" or "OFF"));
             print("Power threshold: |cff9ed4ff" .. (PfshOptions["power"] and tostring(PfshOptions["power"]) .. "%" or "OFF"));
         end;
-        print("Hide delay: |cff9ed4ff" .. tostring(PfshOptions["hideDelay"]) .. "sec");
+        print("Hide delay: |cff9ed4ff" .. tostring(PfshOptions["hideDelay"]) .. " seconds");
         print("Animate mode: |cff9ed4ff" .. (PfshOptions["animate"] and "ON" or "OFF"));
         print("Hidden opacity level: |cff9ed4ff" .. tostring(PfshOptions["opacity"] * 100) .. "%");
     -- show help text

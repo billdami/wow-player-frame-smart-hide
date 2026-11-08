@@ -1,14 +1,6 @@
 local addonName, addon = ...;
 local P = "player";
 local mouseoverTicker;
-local hideTicker;
-
-local animateEvents = {
-    ["PLAYER_REGEN_ENABLED"] = true,
-    ["PLAYER_LEAVE_COMBAT"] = true,
-    ["UNIT_HEALTH"] = true,
-    ["UNIT_POWER_UPDATE"] = true
-}
 
 local function isInstanced()
     local inInstance, instanceType = IsInInstance()
@@ -62,7 +54,7 @@ local function showPlayerFrame()
     end
 end
 
-local function hidePlayerFrame(animateOut)
+local function hidePlayerFrame()
     local interactive = PfshOptions["interactive"] and true or false;
     local opacity = PfshOptions["opacity"] or 0;
 
@@ -70,7 +62,7 @@ local function hidePlayerFrame(animateOut)
         PlayerFrame:EnableMouse(interactive);
     end
 
-    if PfshOptions["animate"] and animateOut then
+    if PfshOptions["animate"] then
         UIFrameFadeOut(PlayerFrame, 0.3, PlayerFrame:GetAlpha(), opacity);
     else
         PlayerFrame:SetAlpha(opacity);
@@ -106,20 +98,10 @@ end
 local function updatePlayerFrame(event)
     if not PfshOptions or not PlayerFrame then return; end
 
-    -- TODO if there was an in progress hide ticker, restart it if hiding on this new update
-    local hasInProgressTicker = hideTicker and true or false;
-    addon.stopHideTicker();
-
     if shouldShowPlayerFrame() then
         showPlayerFrame();
     else
-        local hasDelay = PfshOptions["hideDelay"] and PfshOptions["hideDelay"] > 0;
-        if (hasInProgressTicker or animateEvents[event]) and hasDelay then
-            hideTicker = C_Timer.NewTicker(PfshOptions["hideDelay"], function() hidePlayerFrame(true); end, 1);
-            return;
-        else
-            hidePlayerFrame(false);
-        end
+        hidePlayerFrame();
     end
 end
 
@@ -127,13 +109,6 @@ addon.stopMouseoverTicker = function()
     if mouseoverTicker then
         mouseoverTicker:Cancel();
         mouseoverTicker = nil;
-    end
-end
-
-addon.stopHideTicker = function()
-    if hideTicker then
-        hideTicker:Cancel();
-        hideTicker = nil;
     end
 end
 

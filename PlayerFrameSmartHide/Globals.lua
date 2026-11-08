@@ -6,8 +6,7 @@ addon.defaults = {
         ["target"] = true,
         ["mouseover"] = false,
         ["instance"] = false,
-        ["hideDelay"] = 1,
-        ["animate"] = true,
+        ["animate"] = false,
         ["opacity"] = 0
     }
 };
@@ -20,6 +19,5 @@ Player Frame Smart Hide commands:
 |cffeab517/playerframe target on|off|r |cffadadad(default: on)|r - Show the player frame when targeting.
 |cffeab517/playerframe mouseover on|off|r |cffadadad(default: off)|r - Show the player frame on mouseover.
 |cffeab517/playerframe instance on|off|r |cffadadad(default: off)|r - Show the player frame when in an instance.
-|cffeab517/playerframe hideDelay NUM|r |cffadadad(default: 2)|r - The delay in seconds before hiding the player frame (except for targeting) (set to 0 to disable).
 |cffeab517/playerframe animate on|off|r |cffadadad(default: on)|r - Toggle fade out animation when hiding the player frame.
 |cffeab517/playerframe opacity 0-100|r |cffadadad(default: 0)|r - The opacity % of the player frame when hidden.]];

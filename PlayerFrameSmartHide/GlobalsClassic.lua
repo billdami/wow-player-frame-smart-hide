@@ -8,8 +8,7 @@ addon.defaults = {
         ["instance"] = false,
         ["health"] = 100,
         ["power"] = false,
-        ["hideDelay"] = 1,
-        ["animate"] = true,
+        ["animate"] = false,
         ["opacity"] = 0
     }
 };
@@ -24,7 +23,6 @@ Player Frame Smart Hide commands:
 |cffeab517/playerframe instance on|off|r |cffadadad(default: off)|r - Show the player frame when in an instance.
 |cffeab517/playerframe health 0-100|off|r |cffadadad(default: 100)|r - The player health % below which the player frame will be shown.
 |cffeab517/playerframe power 0-100|off|r |cffadadad(default: off)|r - The player power % below which (or above for rage-like power types) the player frame will be shown.
-|cffeab517/playerframe hideDelay NUM|r |cffadadad(default: 2)|r - The delay in seconds before hiding the player frame (except for targeting) (set to 0 to disable).
 |cffeab517/playerframe animate on|off|r |cffadadad(default: on)|r - Toggle fade out animation when hiding the player frame.
 |cffeab517/playerframe opacity 0-100|r |cffadadad(default: 0)|r - The opacity % of the player frame when hidden.]];
 
