@@ -5,7 +5,7 @@ local mouseoverTicker;
 local function isInstanced()
     local inInstance, instanceType = IsInInstance()
     
-    if inInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "pvp" or instanceType == "arena") then
+    if inInstance and (instanceType == "party" or instanceType == "raid" or instanceType == "pvp" or instanceType == "arena" or instanceType == "scenario") then
         return true;
     else
         return false;
@@ -62,11 +62,7 @@ local function hidePlayerFrame()
         PlayerFrame:EnableMouse(interactive);
     end
 
-    if PfshOptions["animate"] then
-        UIFrameFadeOut(PlayerFrame, 0.3, PlayerFrame:GetAlpha(), opacity);
-    else
-        PlayerFrame:SetAlpha(opacity);
-    end
+    PlayerFrame:SetAlpha(opacity);
 end
 
 local function shouldShowPlayerFrame()
