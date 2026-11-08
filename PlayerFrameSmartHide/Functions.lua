@@ -70,7 +70,7 @@ local function hidePlayerFrame(animateOut)
         PlayerFrame:EnableMouse(interactive);
     end
 
-    if animateOut then
+    if PfshOptions["animate"] and animateOut then
         UIFrameFadeOut(PlayerFrame, 0.3, PlayerFrame:GetAlpha(), opacity);
     else
         PlayerFrame:SetAlpha(opacity);
