@@ -26,11 +26,13 @@ mainFrame:SetScript("OnEvent", function(self, event, arg1)
             PfshOptions = {};
             print("Player Frame Smart Hide loaded. Type \"/playerframe help\" to see available options.");
         end
+
         for option, default in pairs(addon.defaults["options"]) do
             if PfshOptions[option] == nil then
                 PfshOptions[option] = default;
             end
         end
+        
         self:UnregisterEvent("ADDON_LOADED");
         return;
     elseif event == "PLAYER_LEAVING_WORLD" then
@@ -38,5 +40,18 @@ mainFrame:SetScript("OnEvent", function(self, event, arg1)
         return;
     end
 
-    addon.togglePlayerFrame();
+    -- ignore events for settings that are disabled
+    if event == "UNIT_POWER_UPDATE" and not PfshOptions["power"] then
+        return;
+    end
+
+    if event == "UNIT_HEALTH" and not PfshOptions["health"] then
+        return;
+    end
+
+    if event == "PLAYER_TARGET_CHANGED" and not PfshOptions["target"] then
+        return;
+    end
+
+    addon.togglePlayerFrame(event);
 end);
