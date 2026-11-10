@@ -42,30 +42,16 @@ local function getAlphaForHealthAndPowerThresholds()
         return hiddenAlpha;
     end
 
-    local newPowerAlpha = hiddenAlpha;
-
     local hideWhenFullCurve = C_CurveUtil.CreateCurve();
     hideWhenFullCurve:SetType(Enum.LuaCurveType.Step);
     hideWhenFullCurve:AddPoint(0.0, 1);
     hideWhenFullCurve:AddPoint(1.0, hiddenAlpha);
 
-    local hideWhenEmptyCurve = C_CurveUtil.CreateCurve();
-    hideWhenEmptyCurve:SetType(Enum.LuaCurveType.Step);
-    hideWhenEmptyCurve:AddPoint(0.0, hiddenAlpha);
-    hideWhenEmptyCurve:AddPoint(1.0, 1);
-
-    if pThreshold then
-        local powerId, powerType = UnitPowerType(P);
-        local doesDecay = addon.decayPowerTypes[powerType];
-        local pCurve = doesDecay and hideWhenEmptyCurve or hideWhenFullCurve;
-        newPowerAlpha = UnitPowerPercent(P, nil, false, pCurve)
-    end
-
     if hThreshold then
         newAlpha = UnitHealthPercent(P, true, hideWhenFullCurve);
     end
 
-    return newAlpha, newPowerAlpha;
+    return newAlpha;
 end
 
 local function isMouseOverPlayerFrame()
@@ -77,22 +63,20 @@ local function isMouseOverPlayerFrame()
     end
 end
 
-local function isFrameVisible(frame)
-    return not frame or frame:IsVisible();
-end
-
-
 local function setPlayerFrameInteractivity()
     local interactive = PfshOptions["interactive"] and true or false;
 
     if not InCombatLockdown() then
-        -- TODO not sure if IsVisible() will work with tainted values?
-        local isVisible = isFrameVisible(PlayerFrame) and isFrameVisible(PlayerFrame.PlayerFrameContainer) and isFrameVisible(PlayerFrame.PlayerFrameContent);
+        local isVisible = PlayerFrame:IsVisible();
 
-        if (isVisible or interactive) and not PlayerFrame:IsMouseEnabled() then
-            PlayerFrame:EnableMouse(true);
+        if (isVisible or interactive) then
+            if not PlayerFrame:IsMouseEnabled() then
+                PlayerFrame:EnableMouse(true);
+            end
         else
-            PlayerFrame:EnableMouse(false);
+            if PlayerFrame:IsMouseEnabled() then
+                PlayerFrame:EnableMouse(false);
+            end
         end
     end
 end
@@ -117,17 +101,7 @@ end
 local function updatePlayerFrame(event)
     if not PfshOptions or not PlayerFrame then return; end
 
-    local newAlpha, newPowerAlpha = getPlayerFrameAlpha()
-    local childAlpha = newPowerAlpha ~= nil and newPowerAlpha or 1;
-
-    PlayerFrame:SetAlpha(newAlpha);
-
-    if PlayerFrame.PlayerFrameContainer then 
-        PlayerFrame.PlayerFrameContainer:SetAlpha(newPowerAlpha);
-    else if PlayerFrame.PlayerFrameContent then
-        PlayerFrame.PlayerFrameContent:SetAlpha(newPowerAlpha);
-    end
-
+    PlayerFrame:SetAlpha(getPlayerFrameAlpha());
     setPlayerFrameInteractivity();
 end
 
