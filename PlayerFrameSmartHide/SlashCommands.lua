@@ -50,7 +50,7 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             print("Set opacity level to |cff9ed4ff" .. tostring(value) .. "%");
         end
     -- set health threshold
-    elseif addon.isClassic() and command:lower() == "health" then
+    elseif command:lower() == "health" then
         if value == "off" then
             PfshOptions["health"] = false;
             print("Show on player health threshold set to |cff9ed4ffOFF");
@@ -62,7 +62,7 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
             end
         end
     -- set power threshold
-    elseif addon.isClassic() and command:lower() == "power" then
+    elseif command:lower() == "power" then
         if value == "off" then
             PfshOptions["power"] = false;
             print("Show on player power threshold set to |cff9ed4ffOFF");
@@ -80,10 +80,8 @@ function SlashCmdList.PLAYERFRAMEHIDE(msg, editBox)
         print("Target mode: |cff9ed4ff" .. (PfshOptions["target"] and "ON" or "OFF"));
         print("Mouseover mode: |cff9ed4ff" .. (PfshOptions["mouseover"] and "ON" or "OFF"));
         print("Instance mode: |cff9ed4ff" .. (PfshOptions["instance"] and "ON" or "OFF"));
-        if addon.isClassic() then
-            print("Health threshold: |cff9ed4ff" .. (PfshOptions["health"] and tostring(PfshOptions["health"]) .. "%" or "OFF"));
-            print("Power threshold: |cff9ed4ff" .. (PfshOptions["power"] and tostring(PfshOptions["power"]) .. "%" or "OFF"));
-        end;
+        print("Health threshold: |cff9ed4ff" .. (PfshOptions["health"] and tostring(PfshOptions["health"]) .. "%" or "OFF"));
+        print("Power threshold: |cff9ed4ff" .. (PfshOptions["power"] and tostring(PfshOptions["power"]) .. "%" or "OFF"));
         print("Hidden opacity level: |cff9ed4ff" .. tostring(PfshOptions["opacity"] * 100) .. "%");
     -- show help text
     else

@@ -9,8 +9,7 @@
 
 ## SavedVariablesPerCharacter: PfshOptions
 
-Globals.lua [ExcludeLoadGameType vanilla, tbc, wrath, cata, mists]
-GlobalsClassic.lua [AllowLoadGameType vanilla, tbc, wrath, cata, mists][ExcludeLoadGameType standard, forever, camelot]
+Globals.lua
 SlashCommands.lua
 Functions.lua
 Main.lua
