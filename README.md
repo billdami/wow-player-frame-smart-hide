@@ -10,7 +10,7 @@ Targets the latest versions of World of Warcraft Retail, Classic, and Forever.
 
 The player frame is shown while you have a target, are in combat, or mouseover it. Otherwise it is made invisible.
 
-WoW 12.x+ (Midnight) and Wow Forever restricts health and power values as secret values. As such, this addon can no longer compare the player's current health/power against a set threshold in order to conditionally hide the (secure) default player frame. If you require this functionality, you will need to use other addons that completely replace the default frame.
+On Retail (12.x+ Midnight) and Forever, health and power values are secret, so thresholds cannot be compared. Instead, `/playerframe health on|off` and `/playerframe power on|off` show the frame while the player's health or power is changing (the `UNIT_HEALTH` / `UNIT_POWER_UPDATE` events), and hide it again if no such event fires for 2.1 seconds. Classic clients keep the percentage thresholds.
 
 Protected mouse-setting changes are deferred during combat. If the frame was noninteractive before combat, it may remain noninteractive until combat ends, even though it is visible. Use `/playerframe interactive on` outside combat to keep it interactive while hidden as well.
 

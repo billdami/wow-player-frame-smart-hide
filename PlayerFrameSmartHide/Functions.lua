@@ -12,60 +12,46 @@ local function isInstanced()
     end
 end
 
-local function getAlphaForHealthAndPowerThresholds()
-    local hThreshold = PfshOptions["health"];
-    local pThreshold = PfshOptions["power"];
-    local hiddenAlpha = PfshOptions["opacity"] or 0;
-    local newAlpha = hiddenAlpha;
+-- classic: compare health/power % against the configured thresholds
+local function isHealthOutsideThreshold()
+    local threshold = PfshOptions["health"];
+    if not threshold then return false; end
+    local pct = (UnitHealth(P) / UnitHealthMax(P)) * 100;
+    return pct < threshold;
+end
 
-    if addon.isClassic() then
-        if pThreshold then
-            local power = UnitPower(P);
-            local maxPower = UnitPowerMax(P);
-            local pct = (power / maxPower) * 100;
-            local powerId, powerType = UnitPowerType(P);
-            local doesDecay = addon.decayPowerTypes[powerType];
-            if (doesDecay and pct > pThreshold) or (not doesDecay and pct < pThreshold) then
-                return 1;
-            end
+local function isPowerOutsideThreshold()
+    local threshold = PfshOptions["power"];
+    if not threshold then return false; end
+    local pct = (UnitPower(P) / UnitPowerMax(P)) * 100;
+    local powerId, powerType = UnitPowerType(P);
+    local doesDecay = addon.decayPowerTypes[powerType];
+    return (doesDecay and pct > threshold) or (not doesDecay and pct < threshold);
+end
+
+-- non-classic: health/power values are secret, so instead treat the frame as
+-- "active" while the associated event keeps firing (it only fires when the value changes)
+local ACTIVITY_TIMEOUT = 2.1; -- out of combat regen ticks every 2s
+local activity = {
+    UNIT_HEALTH = { option = "health" },
+    UNIT_POWER_UPDATE = { option = "power" }
+};
+
+local function stopActivityTimers()
+    for _, state in pairs(activity) do
+        if state.timer then
+            state.timer:Cancel();
+            state.timer = nil;
         end
-
-        if hThreshold then
-            local hp = UnitHealth(P);
-            local maxHP = UnitHealthMax(P);
-            local pct = (hp / maxHP) * 100;
-            if pct < hThreshold then
-               return 1;
-            end
-        end
-
-        return hiddenAlpha;
+        state.active = false;
     end
+end
 
-    local newPowerAlpha = hiddenAlpha;
-
-    local hideWhenFullCurve = C_CurveUtil.CreateCurve();
-    hideWhenFullCurve:SetType(Enum.LuaCurveType.Step);
-    hideWhenFullCurve:AddPoint(0.0, 1);
-    hideWhenFullCurve:AddPoint(1.0, hiddenAlpha);
-
-    local hideWhenEmptyCurve = C_CurveUtil.CreateCurve();
-    hideWhenEmptyCurve:SetType(Enum.LuaCurveType.Step);
-    hideWhenEmptyCurve:AddPoint(0.0, hiddenAlpha);
-    hideWhenEmptyCurve:AddPoint(1.0, 1);
-
-    if pThreshold then
-        local powerId, powerType = UnitPowerType(P);
-        local doesDecay = addon.decayPowerTypes[powerType];
-        local pCurve = doesDecay and hideWhenEmptyCurve or hideWhenFullCurve;
-        newPowerAlpha = UnitPowerPercent(P, nil, false, pCurve)
+local function isResourceActive()
+    for _, state in pairs(activity) do
+        if state.active and PfshOptions[state.option] then return true; end
     end
-
-    if hThreshold then
-        newAlpha = UnitHealthPercent(P, true, hideWhenFullCurve);
-    end
-
-    return newAlpha, newPowerAlpha;
+    return false;
 end
 
 local function isMouseOverPlayerFrame()
@@ -82,53 +68,69 @@ local function isFrameVisible(frame)
 end
 
 
-local function setPlayerFrameInteractivity()
-    local interactive = PfshOptions["interactive"] and true or false;
-
-    if not InCombatLockdown() then
-        -- TODO not sure if IsVisible() will work with tainted values?
-        local isVisible = isFrameVisible(PlayerFrame) and isFrameVisible(PlayerFrame.PlayerFrameContainer) and isFrameVisible(PlayerFrame.PlayerFrameContent);
-
-        if (isVisible or interactive) and not PlayerFrame:IsMouseEnabled() then
-            PlayerFrame:EnableMouse(true);
-        else
-            PlayerFrame:EnableMouse(false);
-        end
+local function showPlayerFrame()
+    PlayerFrame:SetAlpha(1);
+    if not InCombatLockdown() and not PlayerFrame:IsMouseEnabled() then
+        PlayerFrame:EnableMouse(true);
     end
 end
 
-local function getPlayerFrameAlpha()
+local function hidePlayerFrame()
+    local interactive = PfshOptions["interactive"] and true or false;
+    local opacity = PfshOptions["opacity"] or 0;
+
+    if not InCombatLockdown() then
+        PlayerFrame:EnableMouse(interactive);
+    end
+
+    PlayerFrame:SetAlpha(opacity);
+end
+
+local function shouldShowPlayerFrame()
     -- show the player frame if player is in an instance
-    if PfshOptions["instance"] and isInstanced() then return 1; end
+    if PfshOptions["instance"] and isInstanced() then return true; end
 
     -- show player frame if player has a target
-    if PfshOptions["target"] and UnitExists("target") then return 1; end
+    if PfshOptions["target"] and UnitExists("target") then return true; end
 
     -- show player frame if player is in combat
-    if InCombatLockdown() or UnitAffectingCombat(P) then return 1; end
+    if InCombatLockdown() or UnitAffectingCombat(P) then return true; end
 
     -- show player frame if it is moused over
-    if isMouseOverPlayerFrame() then return 1; end
+    if isMouseOverPlayerFrame() then return true; end
 
-    -- get the alpha based on health and power thresholds
-    return getAlphaForHealthAndPowerThresholds()
+    if addon.isClassic() then
+        if isHealthOutsideThreshold() then return true; end
+        if isPowerOutsideThreshold() then return true; end
+    elseif isResourceActive() then
+        return true;
+    end
+
+    return false;
 end
 
 local function updatePlayerFrame(event)
     if not PfshOptions or not PlayerFrame then return; end
 
-    local newAlpha, newPowerAlpha = getPlayerFrameAlpha()
-    local childAlpha = newPowerAlpha ~= nil and newPowerAlpha or 1;
-
-    PlayerFrame:SetAlpha(newAlpha);
-
-    if PlayerFrame.PlayerFrameContainer then 
-        PlayerFrame.PlayerFrameContainer:SetAlpha(newPowerAlpha);
-    else if PlayerFrame.PlayerFrameContent then
-        PlayerFrame.PlayerFrameContent:SetAlpha(newPowerAlpha);
+    if shouldShowPlayerFrame() then
+        showPlayerFrame();
+    else
+        hidePlayerFrame();
     end
+end
 
-    setPlayerFrameInteractivity();
+-- non-classic: mark health/power as active and (re)start its expiry timer
+local function noteResourceActivity(event)
+    local state = activity[event];
+    if not state or not PfshOptions[state.option] then return; end
+
+    state.active = true;
+    if state.timer then state.timer:Cancel(); end
+    state.timer = C_Timer.NewTimer(ACTIVITY_TIMEOUT, function()
+        state.timer = nil;
+        state.active = false;
+        updatePlayerFrame("ACTIVITY_TIMEOUT");
+    end);
 end
 
 addon.stopMouseoverTicker = function()
@@ -138,8 +140,12 @@ addon.stopMouseoverTicker = function()
     end
 end
 
+addon.stopActivityTimers = stopActivityTimers;
+
 addon.togglePlayerFrame = function(event)
     if not PfshOptions or not PlayerFrame then return; end
+
+    if not addon.isClassic() then noteResourceActivity(event); end
 
     updatePlayerFrame(event);
 

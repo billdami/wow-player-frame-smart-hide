@@ -30,10 +30,20 @@ mainFrame:SetScript("OnEvent", function(self, event, arg1)
             end
         end
         
+        -- non-classic health/power are on/off only; reset any numeric thresholds to off
+        if not addon.isClassic() then
+            for _, option in ipairs({ "health", "power" }) do
+                if type(PfshOptions[option]) ~= "boolean" then
+                    PfshOptions[option] = false;
+                end
+            end
+        end
+
         self:UnregisterEvent("ADDON_LOADED");
         return;
     elseif event == "PLAYER_LEAVING_WORLD" then
         addon.stopMouseoverTicker();
+        addon.stopActivityTimers();
         return;
     end
 

@@ -1,3 +1,11 @@
+WOW_PROJECT_ID = 1;
+WOW_PROJECT_MAINLINE = 1;
+WOW_PROJECT_CLASSIC = 2;
+WOW_PROJECT_BURNING_CRUSADE_CLASSIC = 5;
+WOW_PROJECT_WRATH_CLASSIC = 11;
+WOW_PROJECT_CATACLYSM_CLASSIC = 14;
+WOW_PROJECT_MISTS_CLASSIC = 19;
+
 local addon = {};
 local state;
 local mainFrame;
@@ -11,7 +19,15 @@ function strsplit(delimiter, text)
 end
 
 SlashCmdList = {};
+local timers = {};
 C_Timer = {
+    NewTimer = function(delay, callback)
+        assert(delay == 2.1);
+        local timer = { callback = callback };
+        function timer:Cancel() self.cancelled = true; end
+        timers[#timers + 1] = timer;
+        return timer;
+    end,
     NewTicker = function(interval, callback)
         assert(interval == 0.10);
         local ticker = { callback = callback };
@@ -130,6 +146,40 @@ SlashCmdList.PLAYERFRAMEHIDE("interactive on");
 assert(PlayerFrame.mouseEnabled);
 SlashCmdList.PLAYERFRAMEHIDE("interactive off");
 assert(not PlayerFrame.mouseEnabled);
+
+-- health/power activity: shown while events fire, hidden after timeout
+reset();
+PfshOptions.health = true;
+mainFrame.onEvent(mainFrame, "UNIT_HEALTH");
+assert(PlayerFrame.alpha == 1);
+local t1 = timers[#timers];
+mainFrame.onEvent(mainFrame, "UNIT_HEALTH");
+assert(t1.cancelled and PlayerFrame.alpha == 1);
+local t2 = timers[#timers];
+t2.callback();
+assert(PlayerFrame.alpha == 0);
+mainFrame.onEvent(mainFrame, "UNIT_POWER_UPDATE");
+assert(PlayerFrame.alpha == 0 and timers[#timers] == t2, "power off must be ignored");
+PfshOptions.power = true;
+mainFrame.onEvent(mainFrame, "UNIT_POWER_UPDATE");
+assert(PlayerFrame.alpha == 1);
+mainFrame.onEvent(mainFrame, "PLAYER_LEAVING_WORLD");
+assert(timers[#timers].cancelled);
+expectAlpha(0);
+
+reset();
+SlashCmdList.PLAYERFRAMEHIDE("health on");
+assert(PfshOptions.health == true);
+SlashCmdList.PLAYERFRAMEHIDE("power on");
+assert(PfshOptions.power == true);
+SlashCmdList.PLAYERFRAMEHIDE("health 50");
+assert(PfshOptions.health == true);
+SlashCmdList.PLAYERFRAMEHIDE("health off");
+assert(PfshOptions.health == false);
+
+PfshOptions = { health = 100, power = 50 };
+mainFrame.onEvent(mainFrame, "ADDON_LOADED", "PlayerFrameSmartHide");
+assert(PfshOptions.health == false and PfshOptions.power == false);
 
 for _, filename in ipairs({ "Globals.lua", "SlashCommands.lua", "Functions.lua", "Main.lua" }) do
     assert(loadfile("PlayerFrameSmartHide/" .. filename));
