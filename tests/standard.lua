@@ -167,6 +167,20 @@ mainFrame.onEvent(mainFrame, "PLAYER_LEAVING_WORLD");
 assert(timers[#timers].cancelled);
 expectAlpha(0);
 
+-- leaving combat holds the frame visible until the grace timer expires
+reset();
+PfshOptions.health = true;
+state.combat = true;
+expectAlpha(1);
+state.combat = false;
+mainFrame.onEvent(mainFrame, "PLAYER_REGEN_ENABLED");
+assert(PlayerFrame.alpha == 1);
+timers[#timers].callback();
+assert(PlayerFrame.alpha == 0);
+PfshOptions.health = false;
+mainFrame.onEvent(mainFrame, "PLAYER_REGEN_ENABLED");
+assert(PlayerFrame.alpha == 0);
+
 reset();
 SlashCmdList.PLAYERFRAMEHIDE("health on");
 assert(PfshOptions.health == true);

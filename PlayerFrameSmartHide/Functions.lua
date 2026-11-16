@@ -33,9 +33,19 @@ end
 -- "active" while the associated event keeps firing (it only fires when the value changes)
 local ACTIVITY_TIMEOUT = 2.1; -- out of combat regen ticks every 2s
 local activity = {
-    UNIT_HEALTH = { option = "health" },
-    UNIT_POWER_UPDATE = { option = "power" }
+    UNIT_HEALTH = { options = { "health" } },
+    UNIT_POWER_UPDATE = { options = { "power" } },
+    -- the first regen event can take ~2s to fire after leaving combat, so hold the
+    -- frame visible meanwhile to avoid a brief hide
+    PLAYER_REGEN_ENABLED = { options = { "health", "power" } }
 };
+
+local function isAnyOptionOn(state)
+    for _, option in ipairs(state.options) do
+        if PfshOptions[option] then return true; end
+    end
+    return false;
+end
 
 local function stopActivityTimers()
     for _, state in pairs(activity) do
@@ -49,7 +59,7 @@ end
 
 local function isResourceActive()
     for _, state in pairs(activity) do
-        if state.active and PfshOptions[state.option] then return true; end
+        if state.active and isAnyOptionOn(state) then return true; end
     end
     return false;
 end
@@ -122,7 +132,7 @@ end
 -- non-classic: mark health/power as active and (re)start its expiry timer
 local function noteResourceActivity(event)
     local state = activity[event];
-    if not state or not PfshOptions[state.option] then return; end
+    if not state or not isAnyOptionOn(state) then return; end
 
     state.active = true;
     if state.timer then state.timer:Cancel(); end
